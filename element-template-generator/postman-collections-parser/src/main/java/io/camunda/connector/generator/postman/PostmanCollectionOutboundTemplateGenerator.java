@@ -39,7 +39,8 @@ public class PostmanCollectionOutboundTemplateGenerator
     implements CliCompatibleTemplateGenerator<
         PostmanCollectionsGenerationSource, OutboundElementTemplate> {
 
-  private static final Logger LOG = LoggerFactory.getLogger(PostmanCollectionOutboundTemplateGenerator.class);
+  private static final Logger LOG =
+      LoggerFactory.getLogger(PostmanCollectionOutboundTemplateGenerator.class);
 
   private static final Set<BpmnType> SUPPORTED_ELEMENT_TYPES =
       Set.of(BpmnType.SERVICE_TASK, BpmnType.INTERMEDIATE_THROW_EVENT);
@@ -73,8 +74,7 @@ public class PostmanCollectionOutboundTemplateGenerator
 
     // TODO options
     var operations =
-        PostmanOperationUtil.extractOperations(
-            source.collection(), source.includeOperations());
+        PostmanOperationUtil.extractOperations(source.collection(), source.includeOperations());
     if (operations.isEmpty()) {
       throw new IllegalArgumentException("No operations found in OpenAPI document");
     }
@@ -93,15 +93,18 @@ public class PostmanCollectionOutboundTemplateGenerator
                 })
             .map(OperationParseResult::builder)
             .toList();
-    
+
     return buildTemplates(source.collection(), supportedOperations, configuration);
   }
 
-  private List<OutboundElementTemplate> buildTemplates(PostmanCollection postmanCollection, List<HttpOperationBuilder> operationBuilders, GeneratorConfiguration configuration) {
+  private List<OutboundElementTemplate> buildTemplates(
+      PostmanCollection postmanCollection,
+      List<HttpOperationBuilder> operationBuilders,
+      GeneratorConfiguration configuration) {
     if (configuration == null) {
       configuration = GeneratorConfiguration.DEFAULT;
     }
-    
+
     // TODO: parse authentication
 
     var elementTypes = configuration.elementTypes();
@@ -144,18 +147,18 @@ public class PostmanCollectionOutboundTemplateGenerator
                 : getIdFromApiTitle(info))
         .name(configuration.templateName() != null ? configuration.templateName() : info.name())
         // TODO add proper version handling
-//        .version(
-//            processVersion(
-//                configuration.templateVersion() != null
-//                    ? configuration.templateVersion().toString()
-//                    : info.getVersion()))
+        //        .version(
+        //            processVersion(
+        //                configuration.templateVersion() != null
+        //                    ? configuration.templateVersion().toString()
+        //                    : info.getVersion()))
         .version(1)
         .operations(
             operationBuilders.stream()
                 .map(HttpOperationBuilder::build)
                 .collect(Collectors.toList()))
         // TODO authentication
-        //.authentication(authentication)
+        // .authentication(authentication)
         // TODO proper server implementation
         .servers(extractServers(postmanCollection));
   }
@@ -167,6 +170,4 @@ public class PostmanCollectionOutboundTemplateGenerator
   private List<HttpServerData> extractServers(PostmanCollection collection) {
     return List.of(new HttpServerData("https://httpbin.org", "Label"));
   }
-  
-  
 }
