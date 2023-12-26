@@ -16,17 +16,14 @@
  */
 package io.camunda.connector.generator.postman;
 
-import static org.junit.jupiter.api.Assertions.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import io.camunda.connector.generator.dsl.http.HttpOperationBuilder;
 
-import java.util.ArrayList;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
-
-class PostmanCollectionsGenerationSourceTest {
-
-  @Test
-  void testNew() {
-    var source = new PostmanCollectionsGenerationSource(new ArrayList<>());
-    Assertions.assertThat(source).isNotNull();
-  }
-}
+public record OperationParseResult(
+    String id,
+    String path,
+    boolean supported,
+    @JsonInclude(Include.NON_EMPTY) String info,
+    @JsonIgnore HttpOperationBuilder builder) {}
