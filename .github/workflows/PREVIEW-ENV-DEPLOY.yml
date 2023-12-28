@@ -81,7 +81,7 @@ jobs:
 
   clean:
     if: always() && github.event_name == 'pull_request' && needs.deploy-preview.result != 'skipped'
-    uses: camunda/connectors/.github/workflows/PREVIEW-ENV-CLEAN.yml@master
+    uses: camunda/connectors/.github/workflows/PREVIEW-ENV-CLEAN.yml@infra-gh-510-preview-environments
     needs: [deploy-preview]
     secrets: inherit
     with:

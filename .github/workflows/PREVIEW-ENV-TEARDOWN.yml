@@ -53,7 +53,7 @@ jobs:
 
   clean:
     if: always() && needs.teardown-preview.result != 'skipped'
-    uses: camunda/connectors/.github/workflows/preview-env-clean.yml@master
+    uses: camunda/connectors/.github/workflows/PREVIEW-ENV-CLEAN.yml@infra-gh-510-preview-environments
     needs: [teardown-preview]
     secrets: inherit
     with:
