@@ -18,68 +18,73 @@ package io.camunda.connector.generator.postman.model;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import io.camunda.connector.generator.postman.utils.ObjectMapperProvider;
+import java.util.List;
 
-public record PostmanCollection(
-    Info info, Item[] item, Object[] variable, Object auth, Object[] event) {
+public record PostmanCollectionJson(
+    Info info, List<Item> item, List<?> variable, List<?> auth, List<?> event) {
 
   public record Info(String name, String description, Object version) {}
 
-  public record Item(String id, String name, JsonNode request, Object response, Item[] item) {
-    boolean isFolder() {
-      return item != null && item.length != 0;
+  public record Item(String id, String name, JsonNode request, Object response, List<Item> item) {
+    public boolean isFolder() {
+      return item != null && !item.isEmpty();
     }
 
-    boolean isComplexRequest() {
+    public boolean isComplexRequest() {
       return request.isObject();
     }
 
-    Request parseRequest() {
+    public Request parseRequest() {
       return ObjectMapperProvider.getInstance().convertValue(request, Request.class);
     }
   }
 
-  public record Request(JsonNode url, Method method, Header[] header, Body body) {
-    boolean isComplexUrl() {
+  public record Request(JsonNode url, Method method, List<Header> header, Body body) {
+    public boolean isComplexUrl() {
       return url.isObject();
     }
 
-    Url parseUrl() {
+    public Url parseUrl() {
       return ObjectMapperProvider.getInstance().convertValue(url, Url.class);
+    }
+
+    public enum Method {
+      GET,
+      PUT,
+      POST,
+      PATCH,
+      DELETE,
+      COPY,
+      HEAD,
+      OPTIONS,
+      LINK,
+      UNLINK,
+      PURGE,
+      LOCK,
+      UNLOCK,
+      PROPFIND,
+      VIEW
     }
   }
 
-  public record Url(String raw, QueryParam[] query) {}
+  public record Url(String raw, List<QueryParam> query) {}
 
   public record QueryParam(String key, String value) {}
-
-  public enum Method {
-    GET,
-    PUT,
-    POST,
-    PATCH,
-    DELETE,
-    COPY,
-    HEAD,
-    OPTIONS,
-    LINK,
-    UNLINK,
-    PURGE,
-    LOCK,
-    UNLOCK,
-    PROPFIND,
-    VIEW
-  }
 
   public record Header(String key, String value) {}
 
   public record Body(
-      BodyMode mode, String raw, Object graphql, Object urlencoded, Object formdata) {}
-
-  public enum BodyMode {
-    raw,
-    urlencoded,
-    formdata,
-    file,
-    graphql
+      BodyMode mode, 
+      String raw, 
+      Object graphql, 
+      Object urlencoded, 
+      Object formdata) {
+    public enum BodyMode {
+      raw,
+      urlencoded,
+      formdata,
+      file,
+      graphql
+    }
   }
 }

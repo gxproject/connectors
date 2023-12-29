@@ -26,7 +26,7 @@ import io.camunda.connector.generator.dsl.http.HttpAuthentication;
 import io.camunda.connector.generator.dsl.http.HttpOperationBuilder;
 import io.camunda.connector.generator.dsl.http.HttpOutboundElementTemplateBuilder;
 import io.camunda.connector.generator.dsl.http.HttpServerData;
-import io.camunda.connector.generator.postman.model.PostmanCollection;
+import io.camunda.connector.generator.postman.model.PostmanCollectionV210;
 import io.camunda.connector.generator.postman.utils.PostmanOperationUtil;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,8 +73,10 @@ public class PostmanCollectionOutboundTemplateGenerator
     // TODO extract operations
 
     // TODO options
+//    var operations =
+//        PostmanOperationUtil.extractOperations(source.collection(), source.includeOperations());
     var operations =
-        PostmanOperationUtil.extractOperations(source.collection(), source.includeOperations());
+        PostmanOperationUtil.extractOperations(source.collection(), Set.of("DIAGNOSTICS/GETS THE API REQUEST LOGGING LOG FILES.", "ACCOUNTS/SAVES A CUSTOMIZED REPORT"), List.of("baseUrl=https://test.com"));
     if (operations.isEmpty()) {
       throw new IllegalArgumentException("No operations found in OpenAPI document");
     }
@@ -98,7 +100,7 @@ public class PostmanCollectionOutboundTemplateGenerator
   }
 
   private List<OutboundElementTemplate> buildTemplates(
-      PostmanCollection postmanCollection,
+      PostmanCollectionV210 postmanCollectionJson,
       List<HttpOperationBuilder> operationBuilders,
       GeneratorConfiguration configuration) {
     if (configuration == null) {
@@ -126,7 +128,7 @@ public class PostmanCollectionOutboundTemplateGenerator
     List<OutboundElementTemplate> templates = new ArrayList<>();
     for (var elementType : elementTypes) {
       // TODO: authentication
-      var template = buildTemplate(postmanCollection, operationBuilders, configuration, null);
+      var template = buildTemplate(postmanCollectionJson, operationBuilders, configuration, null);
       template.elementType(elementType);
       templates.add(template.build());
     }
@@ -134,11 +136,11 @@ public class PostmanCollectionOutboundTemplateGenerator
   }
 
   private HttpOutboundElementTemplateBuilder buildTemplate(
-      PostmanCollection postmanCollection,
+      PostmanCollectionV210 postmanCollectionJson,
       List<HttpOperationBuilder> operationBuilders,
       GeneratorConfiguration configuration,
       List<HttpAuthentication> authentication) {
-    var info = postmanCollection.info();
+    var info = postmanCollectionJson.info();
     return HttpOutboundElementTemplateBuilder.create(
             ConnectorMode.HYBRID.equals(configuration.connectorMode()))
         .id(
@@ -160,14 +162,14 @@ public class PostmanCollectionOutboundTemplateGenerator
         // TODO authentication
         // .authentication(authentication)
         // TODO proper server implementation
-        .servers(extractServers(postmanCollection));
+        .servers(extractServers(postmanCollectionJson));
   }
 
-  private String getIdFromApiTitle(PostmanCollection.Info info) {
+  private String getIdFromApiTitle(PostmanCollectionV210.Info info) {
     return info.name().trim().replace(" ", "-").toLowerCase();
   }
 
-  private List<HttpServerData> extractServers(PostmanCollection collection) {
+  private List<HttpServerData> extractServers(PostmanCollectionV210 collection) {
     return List.of(new HttpServerData("https://httpbin.org", "Label"));
   }
 }

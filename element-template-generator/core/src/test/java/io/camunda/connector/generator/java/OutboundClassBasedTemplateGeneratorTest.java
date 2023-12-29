@@ -182,7 +182,7 @@ public class OutboundClassBasedTemplateGeneratorTest extends BaseTest {
           generator
               .generate(
                   MyConnectorFunction.MinimallyAnnotated.class,
-                  new GeneratorConfiguration(ConnectorMode.HYBRID, null, null, null, null))
+                  new GeneratorConfiguration(ConnectorMode.HYBRID, null, null, null, null, null))
               .get(0);
       var property = getPropertyById("taskDefinitionType", template);
       assertThat(property.getType()).isEqualTo("String");
@@ -198,7 +198,7 @@ public class OutboundClassBasedTemplateGeneratorTest extends BaseTest {
 
     @Test
     void multipleElementTypes_definedInAnnotation() {
-      var config = new GeneratorConfiguration(ConnectorMode.HYBRID, null, null, null, null);
+      var config = new GeneratorConfiguration(ConnectorMode.HYBRID, null, null, null, null, null);
       var templates =
           generator.generate(MyConnectorFunction.WithMultipleElementTypes.class, config);
       boolean hasServiceTask = false,
@@ -239,7 +239,7 @@ public class OutboundClassBasedTemplateGeneratorTest extends BaseTest {
                   new ConnectorElementType(Set.of(BpmnType.TASK), BpmnType.SERVICE_TASK),
                   new ConnectorElementType(
                       Set.of(BpmnType.INTERMEDIATE_THROW_EVENT),
-                      BpmnType.INTERMEDIATE_THROW_EVENT)));
+                      BpmnType.INTERMEDIATE_THROW_EVENT)), null);
       var templates = generator.generate(MyConnectorFunction.FullyAnnotated.class, config);
       boolean hasServiceTask = false, hasMessageThrowEvent = false;
       for (var template : templates) {
@@ -264,7 +264,7 @@ public class OutboundClassBasedTemplateGeneratorTest extends BaseTest {
               null,
               null,
               null,
-              Set.of(new ConnectorElementType(Set.of(BpmnType.TASK), BpmnType.SERVICE_TASK)));
+              Set.of(new ConnectorElementType(Set.of(BpmnType.TASK), BpmnType.SERVICE_TASK)), null);
       var templates =
           generator.generate(MyConnectorFunction.WithMultipleElementTypes.class, config);
       boolean hasServiceTask = false,
@@ -305,7 +305,7 @@ public class OutboundClassBasedTemplateGeneratorTest extends BaseTest {
                   new ConnectorElementType(Set.of(BpmnType.TASK), BpmnType.SERVICE_TASK),
                   new ConnectorElementType(
                       Set.of(BpmnType.INTERMEDIATE_CATCH_EVENT),
-                      BpmnType.INTERMEDIATE_CATCH_EVENT)));
+                      BpmnType.INTERMEDIATE_CATCH_EVENT)), null);
       var exception =
           assertThrows(
               IllegalArgumentException.class,
@@ -631,7 +631,7 @@ public class OutboundClassBasedTemplateGeneratorTest extends BaseTest {
           generator
               .generate(
                   MyConnectorFunction.MinimallyAnnotated.class,
-                  new GeneratorConfiguration(ConnectorMode.HYBRID, null, null, null, null))
+                  new GeneratorConfiguration(ConnectorMode.HYBRID, null, null, null, null, null))
               .get(0);
       checkPropertyGroups(
           List.of(

@@ -27,6 +27,8 @@ class PostmanCollectionsGenerationSourceTest {
   @Test
   void testNew() {
     var source = new PostmanCollectionsGenerationSource(new ArrayList<>());
+    var gen = new PostmanCollectionOutboundTemplateGenerator();
+    gen.generate(source, null);
     Assertions.assertThat(source).isNotNull();
   }
 }

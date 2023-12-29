@@ -55,6 +55,14 @@ public class ConGen {
       names = {"-e", "--element-types"},
       description = "target element types for the resulting connector")
   List<String> elementTypes;
+  
+  // TODO: do we need this?
+  @Option(
+      names = {"-v", "--variable"},
+      description = "variables that applied to post-processing, e.g. given variable {{myUrl}}/test," 
+          + "then -v myUrl=https://myhost.com will produce result https://myhost.com/test"
+  )
+  List<String> variables;
 
   GeneratorConfiguration generatorConfiguration() {
     var bpmnTypes =
@@ -74,7 +82,8 @@ public class ConGen {
         templateId,
         templateName,
         null,
-        bpmnTypes);
+        bpmnTypes,
+        variables);
   }
 
   private Set<BpmnType> getAppliesToFromBpmnType(BpmnType bpmnType) {

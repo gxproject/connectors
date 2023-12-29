@@ -20,6 +20,7 @@ import io.camunda.connector.generator.api.GeneratorConfiguration;
 import io.camunda.connector.generator.api.GeneratorConfiguration.ConnectorElementType;
 import io.camunda.connector.generator.java.annotation.ElementTemplate;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -46,7 +47,8 @@ public class ConfigurationUtil {
     if (override.elementTypes() != null && !override.elementTypes().isEmpty()) {
       elementTypes = override.elementTypes();
     }
+    var variables = Optional.ofNullable(override.variables()).orElse(List.of());
     return new GeneratorConfiguration(
-        connectorMode, templateId, templateName, templateVersion, elementTypes);
+        connectorMode, templateId, templateName, templateVersion, elementTypes, variables);
   }
 }
